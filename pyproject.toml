@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ki-ordnerorganisator"
+version = "1.0.0"
+description = "Sichere, KI-gestützte Organisation von Dateien und Ordnern unter Windows – das Original bleibt unverändert."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "ErikEdits" }]
+keywords = ["ordner", "organisation", "ki", "windows", "dateien", "openrouter"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Natural Language :: German",
+    "Environment :: Win32 (MS Windows)",
+]
+dependencies = [
+    "PySide6>=6.6",
+    "keyring>=24",
+]
+
+[project.optional-dependencies]
+gguf = ["llama-cpp-python>=0.2.80"]
+dev = ["pytest>=8", "ruff>=0.5", "pyinstaller>=6.6"]
+
+[project.scripts]
+ki-ordnerorganisator-cli = "ordnerorganisator.cli:main"
+
+[project.gui-scripts]
+ki-ordnerorganisator = "ordnerorganisator.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["ordnerorganisator*"]
+
+[tool.setuptools.package-data]
+ordnerorganisator = ["schema/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]

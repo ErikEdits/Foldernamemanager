@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ErikEdits/Foldernamemanager/schema/organisationsplan.schema.json",
+  "title": "KI-Ordnerorganisator – Organisationsplan",
+  "description": "Austauschformat zwischen KI (integriert, API oder Cloud-KI per Export/Import) und dem lokalen Programm. Die KI liefert ausschließlich diesen Plan; das Programm prüft ihn und setzt ihn nach Zustimmung des Benutzers nur in einer Kopie um.",
+  "type": "object",
+  "required": ["operations"],
+  "properties": {
+    "format": {"const": "ki-ordnerorganisator-plan"},
+    "version": {"const": 1},
+    "package_id": {"type": "string", "description": "Kennung des Analysepakets, unverändert übernehmen."},
+    "summary": {"type": "string"},
+    "project_type": {"enum": ["general", "java", "minecraft", "video", "photos"]},
+    "language": {"enum": ["de", "en"]},
+    "operations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/operation"}
+    },
+    "warnings": {"type": "array", "items": {"type": "string"}},
+    "questions": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Relativer Pfad mit '/' als Trennzeichen, ohne Laufwerk, ohne führendes '/', ohne '..'.",
+      "not": {"pattern": "(^/|^[A-Za-z]:|(^|/)\\.\\.(/|$))"}
+    },
+    "operation": {
+      "type": "object",
+      "required": ["type", "target"],
+      "properties": {
+        "id": {"type": "string"},
+        "type": {"enum": ["create_folder", "rename", "move"]},
+        "source": {"$ref": "#/$defs/relpath", "description": "Pfad in der URSPRÜNGLICHEN Struktur (nicht bei create_folder)."},
+        "target": {"$ref": "#/$defs/relpath", "description": "Vollständiger Pfad in der NEUEN Struktur."},
+        "reason": {"type": "string"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "warnings": {"type": "array", "items": {"type": "string"}}
+      },
+      "if": {"properties": {"type": {"enum": ["rename", "move"]}}},
+      "then": {"required": ["source"]}
+    }
+  }
+}
